@@ -7,6 +7,9 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 5000;
 
+app.use(express.json());// to parese req.body
+// limit shouldn't be too high to prevent DOS
+ // to parse form data(urlencoded)
 
 app.use("/api/auth", routes)
 
