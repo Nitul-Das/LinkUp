@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken"
 
 // generates a JSON Web Token (JWT) that encodes the user's ID with a 15-day expiration.
 
