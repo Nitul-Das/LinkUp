@@ -1,9 +1,13 @@
 import jwt from "jsonwebtoken";
 
+// generates a JSON Web Token (JWT) that encodes the user's ID with a 15-day expiration.
+
 export const generateTokenAndSetCookie = (userId, res) => {
 	const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
 		expiresIn: "15d",
 	});
+
+// stores the JWT in a cookie named jwt
 
 	res.cookie("jwt", token, {
 		maxAge: 15 * 24 * 60 * 60 * 1000, //milliseconds

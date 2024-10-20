@@ -1,10 +1,15 @@
 import express from "express";
-import routes from "./routes/auth.route.js"
 import dotenv from "dotenv"
-import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
 
+import authroutes from "./routes/auth.route.js"
+import userroutes from "./routes/user.route.js"
+
+import connectDB from "./config/db.js";
+
+
 dotenv.config()
+
 const app = express()
 const PORT = process.env.PORT || 5000;
 
@@ -13,7 +18,8 @@ app.use(express.urlencoded({ extended: true })); // to parse form data(urlencode
 app.use(cookieParser()); // it is package installed to get the tokken from cookies in protect routes
 
 
-app.use("/api/auth", routes)
+app.use("/api/auth", authroutes)
+app.use("/api/users", userroutes)
 
 app.listen(PORT,()=>{
     connectDB()
