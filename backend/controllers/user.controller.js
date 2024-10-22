@@ -1,3 +1,7 @@
+import bcrypt from "bcryptjs"
+import { v2 as cloudinary } from "cloudinary";
+
+//models
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
 
@@ -123,14 +127,55 @@ export const updateUser = async(req,res)=>{
 
 			const salt = await bcrypt.genSalt(10);
 			user.password = await bcrypt.hash(newPassword, salt);
-
 		}
 
+		if (profileImg){
 
+            //Check if the user already has a profile image   
+			if (user.profileImg) {
+				// https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
+				// // Step 2: Delete the old image from Cloudinary by extracting the image ID from the URL
+				await cloudinary.uploader.destroy(user.profileImg.split("/").pop().split(".")[0]);
+			}
+
+            //Upload the new profile image to Cloudinary
+			const uploadedResponse = await cloudinary.uploader.upload(profileImg);
+
+			//Store the secure URL of the uploaded image
+			profileImg = uploadedResponse.secure_url;
+		}
+
+		if (coverImg){
+
+			// Step 1: Check if the user already has a cover image
+			if (user.coverImg) {
+				// Step 2: Delete the old cover image from Cloudinary
+				await cloudinary.uploader.destroy(user.coverImg.split("/").pop().split(".")[0]);
+			}
+		
+			// Step 3: Upload the new cover image to Cloudinary
+			const uploadedResponse = await cloudinary.uploader.upload(coverImg);
+			// Step 4: Store the secure URL of the uploaded image
+			coverImg = uploadedResponse.secure_url;
+		}
+		
+		user.fullName = fullName || user.fullName;
+		user.email = email || user.email;
+		user.username = username || user.username;
+		user.bio = bio || user.bio;
+		user.link = link || user.link;
+		user.profileImg = profileImg || user.profileImg;
+		user.coverImg = coverImg || user.coverImg;
+
+		user = await user.save();
+
+		// password should be null in response
+		user.password = null;
+
+		return res.status(200).json(user);
 		
 	} catch (error) {
-		
+		console.log("Error in updateUser: ", error.message);
+		res.status(500).json({ error: error.message });	
 	}
-
-
 }
