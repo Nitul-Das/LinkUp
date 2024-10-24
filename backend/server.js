@@ -5,6 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 import authroutes from "./routes/auth.route.js"
 import userroutes from "./routes/user.route.js"
+import postroutes from "./routes/post.route.js"
 
 import connectDB from "./config/db.js";
 
@@ -27,6 +28,7 @@ app.use(cookieParser()); // it is package installed to get the tokken from cooki
 
 app.use("/api/auth", authroutes)
 app.use("/api/users", userroutes)
+app.use("/api/posts", postroutes)
 
 app.listen(PORT,()=>{
     connectDB()
